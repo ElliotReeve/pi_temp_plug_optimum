@@ -72,7 +72,36 @@ def set_temp():
 		else:
 			plug_log.write(string_time+" /set-temp not activating as temperature is: "+str(temp)+"\n")
 			plug_log.close()
-			return jsonify({"message": "Temperature is already at optimum temperature.", "status": "ok"})
+			return jsonify({"message": "Temperature is already at optimum temperature.", "status": "error"})
+	else:
+		return jsonify({"message": "unauthorised", "status": "error"})
+
+@app.route("/cancel-temp")
+def cancel_temp():
+	auth = request.args.get('auth')
+	if auth == "cabin":
+		time_now = datetime.now(gmt)
+		string_time = time_now.strftime("%d/%m/%y %H:%M:%S")
+		plug_log = open("/d1/cabin_log.txt", "a")
+		plug = SmartPlug("192.168.1.144")
+		temp = read_temp()
+		plug_status_file = open("/d1/webserver/reaching_optimum.txt", "r")
+		cabin_plug_status = plug_status_file.read()
+		plug_status_file.close()
+		if cabin_plug_status == "1":
+			GPIO.output(17,GPIO.LOW)
+			GPIO.output(27,GPIO.LOW)
+			plug_log.write(string_time+" /cancel-temp heating cancelled, current temperature is: "+str(temp)+"\n")
+			plug_log.close()
+			plug_status_file = open("/d1/webserver/reaching_optimum.txt", "w")
+			plug.turn_off()
+			plug_status_file.write("0")
+			plug_status_file.close()
+			return jsonify({"message": "Heating cancelled.", "status": "ok"})
+		else:
+			plug_log.write(string_time+" /cancel-temp plug not on, temperature is: "+str(temp)+"\n")
+			plug_log.close()
+			return jsonify({"message": "Plug is not on so unable to cancel heating.", "status": "error"})
 	else:
 		return jsonify({"message": "unauthorised", "status": "error"})
 
