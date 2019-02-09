@@ -10,4 +10,4 @@ Add Script to Crontab: `*/10 * * * * /usr/bin/python3 your/url/path/reached_temp
 
 `/set-temp` - turns on tp-link plug to reach an optimum temperature of 20C
 
-`/stop-temp` - turns off tp-link and stops trying to reach optimum temperature
+`/cancel-temp` - turns off tp-link and stops trying to reach optimum temperature
