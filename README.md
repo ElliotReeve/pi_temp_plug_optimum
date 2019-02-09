@@ -1,6 +1,7 @@
 <h1>Raspberry PI Temperature Controller - TP Link</h1>
 
 Run API: `sudo python3 app_temp.py &> /dev/null &`
+
 Add Script to Crontab: `*/10 * * * * /usr/bin/python3 your/url/path/reached_temp.py`
 
 <h3>Endpoints</h3>
